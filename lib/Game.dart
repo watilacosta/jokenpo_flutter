@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class Game extends StatefulWidget {
   @override
@@ -6,11 +9,41 @@ class Game extends StatefulWidget {
 }
 
 class _GameState extends State<Game> {
-  var _result = "";
+  var _result       = "";
+  var _escolhaDoApp = "";
+  var _imagemApp    = AssetImage("images/padrao.png");
 
-  void setResult() {
+  void _opcaoSelecionada(String escolhaUsuario) {
+    var opcoes = ['pedra', 'papel', 'tesoura'];
+    var numero = Random().nextInt(opcoes.length);
+    _escolhaDoApp = "images/" + opcoes[numero] + ".png";
+
     setState(() {
-      _result = 'Ganhou!!!';
+      _imagemApp = AssetImage(_escolhaDoApp);
+      // Situaçoes de vitoria do usuario
+      if(
+        (escolhaUsuario == "pedra"   && _escolhaDoApp == "tesoura") ||
+        (escolhaUsuario == "tesoura" && _escolhaDoApp == "papel")   ||
+        (escolhaUsuario == "papel"   && _escolhaDoApp == "pedra")
+      ) {
+        _result = "Parabéns, você venceu!";
+      } else if (
+        (_escolhaDoApp == "pedra"   && escolhaUsuario == "tesoura") ||
+        (_escolhaDoApp == "tesoura" && escolhaUsuario == "papel")   ||
+        (_escolhaDoApp == "papel"   && escolhaUsuario == "pedra")
+      ){
+        _result = "O App te venceu!!!";
+      } else {
+        _result = "Empate!!!";
+      }
+    });
+  }
+
+  void _resetGame() {
+    setState(() {
+      _result = "";
+      _escolhaDoApp = "";
+      _imagemApp = AssetImage("images/padrao.png");
     });
   }
 
@@ -35,8 +68,8 @@ class _GameState extends State<Game> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(top: 40, bottom: 80),
-                child: Image.asset('images/padrao.png'),
+                padding: EdgeInsets.only(top: 40, bottom: 40),
+                child: Image(image: _imagemApp,),
               ),
               Padding(
                 padding: EdgeInsets.only(bottom: 80),
@@ -52,13 +85,22 @@ class _GameState extends State<Game> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Image.asset('images/pedra.png', height: 110),
-                  Image.asset('images/papel.png', height: 110),
-                  Image.asset('images/tesoura.png', height: 110),
+                  GestureDetector(
+                    child: Image.asset('images/pedra.png', height: 110),
+                    onTap: () => _opcaoSelecionada("pedra"),
+                  ),
+                  GestureDetector(
+                    child: Image.asset('images/papel.png', height: 110),
+                    onTap: () => _opcaoSelecionada("papel"),
+                  ),
+                  GestureDetector(
+                    child: Image.asset('images/tesoura.png', height: 110),
+                    onTap: () => _opcaoSelecionada("tesoura"),
+                  )
                 ],
               ),
               Padding(
-                padding: EdgeInsets.only(top: 50),
+                padding: EdgeInsets.only(top: 35),
                 child: Text(
                     'Faça sua Escolha',
                     style: TextStyle(
@@ -67,6 +109,20 @@ class _GameState extends State<Game> {
                         fontWeight: FontWeight.normal
                     )
                 ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 70),
+                child: GestureDetector(
+                  onTap: _resetGame,
+                  child: Text(
+                      '< Reiniciar >',
+                      style: TextStyle(
+                          color: Colors.lightBlue,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold
+                      )
+                  ),
+                )
               ),
             ],
           ),
