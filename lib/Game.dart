@@ -16,10 +16,12 @@ class _GameState extends State<Game> {
   void _opcaoSelecionada(String escolhaUsuario) {
     var opcoes = ['pedra', 'papel', 'tesoura'];
     var numero = Random().nextInt(opcoes.length);
-    _escolhaDoApp = "images/" + opcoes[numero] + ".png";
+    _escolhaDoApp = opcoes[numero];
+    var _imageEscolhaDoApp = "images/" + opcoes[numero] + ".png";
 
     setState(() {
-      _imagemApp = AssetImage(_escolhaDoApp);
+      _imagemApp = AssetImage(_imageEscolhaDoApp);
+
       // Situaçoes de vitoria do usuario
       if(
         (escolhaUsuario == "pedra"   && _escolhaDoApp == "tesoura") ||
@@ -69,7 +71,7 @@ class _GameState extends State<Game> {
               ),
               Padding(
                 padding: EdgeInsets.only(top: 40, bottom: 40),
-                child: Image(image: _imagemApp,),
+                child: Image(image: _imagemApp),
               ),
               Padding(
                 padding: EdgeInsets.only(bottom: 80),
